@@ -15,9 +15,14 @@ class _Subtree(object):
         first_slash = key_path.find('/')
         if first_slash >= 0:
             our_key = key_path[:first_slash]
-            return self._config_tree[our_key][key_path[first_slash+1:]]
+            try:
+                return self._config_tree[our_key][key_path[first_slash+1:]]
+            except KeyError:
+                raise KeyError(key_path)
         else:
-            return self._config_tree[key_path]
+            if key_path in self._config_tree:
+                return self._config_tree[key_path]
+            raise KeyError(key_path)
 
     def __setitem__(self, key_path, value):
         first_slash = key_path.find('/')
